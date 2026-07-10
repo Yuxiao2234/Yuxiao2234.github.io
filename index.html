@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yuxiao (Maj) Li — Mechanistic Interpretability & AI Safety</title>
+<meta name="description" content="Yuxiao (Maj) Li — independent researcher in mechanistic interpretability and AI safety. Sparse autoencoders, concept geometry, interpretability-guided fine-tuning. Mentor with SPAR, MARS, and Effective Thesis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f7f9;
+  --grid:#e7eaf0;
+  --ink:#17213a;
+  --muted:#5b6478;
+  --hairline:#d8dde6;
+  --accent:#2b4bd8;
+  --accent-soft:#e6eafc;
+  --card:#ffffff;
+  --serif:"STIX Two Text",Georgia,serif;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:36px 36px;
+  font-size:16px;
+  line-height:1.6;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:20;
+  background:rgba(246,247,249,.88);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--hairline);
+}
+.nav-inner{
+  max-width:980px;margin:0 auto;padding:14px 24px;
+  display:flex;align-items:baseline;gap:28px;flex-wrap:wrap;
+}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:1.05rem;color:var(--ink)}
+.nav-name:hover{text-decoration:none}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap;margin-left:auto}
+.nav-links a{
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;
+  color:var(--muted);text-transform:lowercase;
+}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- layout ---------- */
+main{max-width:980px;margin:0 auto;padding:0 24px 96px}
+section{padding-top:72px}
+.eyebrow{
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;gap:12px;margin-bottom:18px;
+}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--hairline)}
+h2{font-family:var(--serif);font-weight:500;font-size:1.7rem;margin-bottom:20px;line-height:1.25}
+h3{font-family:var(--serif);font-weight:600;font-size:1.08rem;line-height:1.35}
+p{max-width:70ch}
+.muted{color:var(--muted)}
+
+/* ---------- hero ---------- */
+.hero{
+  display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+  gap:40px;align-items:center;padding-top:72px;
+}
+.hero h1{
+  font-family:var(--serif);font-weight:500;font-size:clamp(2.1rem,5vw,3rem);
+  line-height:1.12;margin-bottom:18px;
+}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero .lede{font-size:1.05rem;color:var(--muted);margin-bottom:22px}
+.role-line{
+  font-family:var(--mono);font-size:.8rem;color:var(--ink);
+  line-height:2;
+}
+.role-line span{color:var(--muted)}
+.hero-links{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;
+  padding:9px 16px;border:1px solid var(--ink);border-radius:3px;
+  color:var(--ink);background:transparent;
+}
+.btn:hover{background:var(--ink);color:var(--paper);text-decoration:none}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:var(--accent);border-color:var(--accent)}
+.hero-figure{position:relative}
+.hero-figure figcaption{
+  font-family:var(--mono);font-size:.68rem;color:var(--muted);
+  margin-top:10px;text-align:right;
+}
+
+/* ---------- research themes ---------- */
+.theme{
+  border-top:1px solid var(--hairline);
+  padding:28px 0 8px;
+}
+.theme:first-of-type{border-top:none;padding-top:8px}
+.theme-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.theme-num{
+  font-family:var(--mono);font-size:.72rem;color:var(--accent);
+  letter-spacing:.08em;
+}
+.theme > p{font-size:.95rem;color:var(--muted);margin-bottom:16px}
+.projects{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.project{
+  background:var(--card);border:1px solid var(--hairline);border-radius:4px;
+  padding:16px 18px;display:flex;flex-direction:column;gap:8px;
+}
+.project .tag-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tag{
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;
+  text-transform:uppercase;padding:3px 8px;border-radius:2px;
+  background:var(--accent-soft);color:var(--accent);
+}
+.tag.neutral{background:#eef0f4;color:var(--muted)}
+.project h4{font-family:var(--serif);font-weight:600;font-size:1rem;line-height:1.35}
+.project p{font-size:.88rem;color:var(--muted)}
+.project .foot{
+  margin-top:auto;font-family:var(--mono);font-size:.7rem;color:var(--muted);
+}
+
+/* ---------- programs ---------- */
+.program{
+  background:var(--card);border:1px solid var(--hairline);border-radius:4px;
+  padding:24px 26px;margin-bottom:16px;
+}
+.program-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.program-head .when{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-left:auto}
+.program p{font-size:.95rem;color:var(--muted)}
+.program .roster{
+  margin-top:14px;padding-top:14px;border-top:1px dashed var(--hairline);
+}
+.roster-item{
+  display:flex;gap:12px;align-items:baseline;padding:6px 0;
+  font-size:.88rem;flex-wrap:wrap;
+}
+.roster-item .pj{font-weight:500;color:var(--ink)}
+.roster-item .who{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.program .note{margin-top:12px;font-size:.88rem}
+
+/* ---------- publications ---------- */
+.pub{padding:18px 0;border-bottom:1px solid var(--hairline)}
+.pub:first-of-type{border-top:1px solid var(--hairline)}
+.pub .title{font-family:var(--serif);font-weight:600;font-size:1.02rem}
+.pub .authors{font-size:.9rem;color:var(--muted);margin-top:3px}
+.pub .venue{font-family:var(--mono);font-size:.74rem;color:var(--ink);margin-top:6px}
+.pub .venue a{margin-left:10px}
+
+/* ---------- notes ---------- */
+.note-list{list-style:none}
+.note-list li{
+  display:flex;gap:16px;align-items:baseline;padding:12px 0;
+  border-bottom:1px solid var(--hairline);flex-wrap:wrap;
+}
+.note-list .date{font-family:var(--mono);font-size:.74rem;color:var(--muted);min-width:88px}
+
+/* ---------- contact ---------- */
+.contact-grid{display:flex;gap:28px;flex-wrap:wrap;margin-top:6px}
+.contact-grid a{font-family:var(--mono);font-size:.84rem}
+
+footer{
+  border-top:1px solid var(--hairline);margin-top:80px;padding:24px;
+  text-align:center;font-family:var(--mono);font-size:.72rem;color:var(--muted);
+}
+
+/* ---------- motion ---------- */
+@keyframes drift{
+  0%{transform:translate(0,0)}
+  50%{transform:translate(0,-6px)}
+  100%{transform:translate(0,0)}
+}
+.drift{animation:drift 9s ease-in-out infinite}
+.drift.d2{animation-duration:12s;animation-delay:-3s}
+.drift.d3{animation-duration:10.5s;animation-delay:-6s}
+@media (prefers-reduced-motion:reduce){
+  .drift{animation:none}
+  html{scroll-behavior:auto}
+}
+
+/* ---------- responsive ---------- */
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr;gap:28px}
+  .hero-figure{max-width:420px}
+  .projects{grid-template-columns:1fr}
+  section{padding-top:56px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-name" href="#top">Yuxiao (Maj) Li</a>
+    <div class="nav-links">
+      <a href="#research">research</a>
+      <a href="#programs">programs</a>
+      <a href="#publications">publications</a>
+      <a href="#notes">notes</a>
+      <a href="#contact">contact</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <div class="hero">
+    <div>
+      <h1>Toward a <em>physics of AI</em>: interpretability you can measure.</h1>
+      <p class="lede">
+        I study the internal structure of neural networks — sparse autoencoders,
+        concept geometry, and how training moves representations — to build
+        safety tools that rest on mechanism, not just behavior.
+      </p>
+      <div class="role-line">
+        Researcher <span>· Beneficial AI Foundation (BAIF), Cambridge MA</span><br>
+        Mentor <span>· SPAR · MARS · Effective Thesis</span><br>
+        Previously <span>· MATS 4.0 &amp; 5.0 · BCAM · ByteDance · PhD, Tsinghua</span>
+      </div>
+      <div class="hero-links">
+        <a class="btn primary" href="#programs">Work with me</a>
+        <a class="btn" href="https://scholar.google.com/citations?hl=en&amp;user=2CGCf9cAAAAJ">Google Scholar</a>
+      </div>
+    </div>
+
+    <!-- Signature: SAE feature point cloud with a "crystal" parallelogram,
+         after The Geometry of Concepts (Li et al., Entropy 2025) -->
+    <figure class="hero-figure" aria-hidden="true">
+      <svg viewBox="0 0 340 300" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <g fill="#aeb6c9">
+          <circle cx="30" cy="40" r="2.2"/><circle cx="70" cy="210" r="2.2"/>
+          <circle cx="120" cy="30" r="2.2"/><circle cx="300" cy="60" r="2.2"/>
+          <circle cx="270" cy="250" r="2.2"/><circle cx="40" cy="140" r="2.2"/>
+          <circle cx="210" cy="20" r="2.2"/><circle cx="320" cy="160" r="2.2"/>
+          <circle cx="150" cy="270" r="2.2"/><circle cx="90" cy="90" r="2.2"/>
+          <circle cx="250" cy="120" r="2.2"/><circle cx="180" cy="180" r="2.2"/>
+          <circle cx="60" cy="270" r="2.2"/><circle cx="310" cy="220" r="2.2"/>
+          <circle cx="20" cy="220" r="2.2"/><circle cx="230" cy="285" r="2.2"/>
+        </g>
+        <g class="drift">
+          <path d="M110 120 L200 95 L235 165 L145 190 Z"
+                fill="none" stroke="#2b4bd8" stroke-width="1.4" stroke-dasharray="4 4"/>
+          <circle cx="110" cy="120" r="4.5" fill="#2b4bd8"/>
+          <circle cx="200" cy="95"  r="4.5" fill="#2b4bd8"/>
+          <circle cx="235" cy="165" r="4.5" fill="#2b4bd8"/>
+          <circle cx="145" cy="190" r="4.5" fill="#2b4bd8"/>
+          <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#17213a">
+            <text x="96"  y="110">man</text>
+            <text x="206" y="88">king</text>
+            <text x="243" y="172">queen</text>
+            <text x="118" y="205">woman</text>
+          </g>
+        </g>
+        <g class="drift d2" opacity=".55">
+          <circle cx="285" cy="35" r="3" fill="#5b6478"/>
+          <circle cx="305" cy="52" r="3" fill="#5b6478"/>
+          <circle cx="292" cy="70" r="3" fill="#5b6478"/>
+          <path d="M285 35 L305 52 L292 70" fill="none" stroke="#5b6478" stroke-width="1"/>
+        </g>
+        <g class="drift d3" opacity=".55">
+          <circle cx="55" cy="245" r="3" fill="#5b6478"/>
+          <circle cx="80" cy="258" r="3" fill="#5b6478"/>
+          <circle cx="68" cy="230" r="3" fill="#5b6478"/>
+          <path d="M68 230 L55 245 L80 258" fill="none" stroke="#5b6478" stroke-width="1"/>
+        </g>
+      </svg>
+      <figcaption>fig. 1 — SAE feature geometry, after Li et al. (2025)</figcaption>
+    </figure>
+  </div>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about">
+    <div class="eyebrow">about</div>
+    <p>
+      I'm an independent researcher in mechanistic interpretability and AI safety,
+      affiliated with the <a href="https://baif.ai">Beneficial AI Foundation</a> at MIT.
+      My work spans sparse autoencoders and crosscoders, the geometry of learned
+      concepts, parameter-efficient fine-tuning, and information-theoretic accounts
+      of how behaviors transfer between models.
+    </p>
+    <p style="margin-top:14px">
+      Before this: PhD in Electrical Engineering at Tsinghua University, senior
+      research engineering at ByteDance, a postdoc at the Basque Center for Applied
+      Mathematics (BCAM), and MATS 4.0 &amp; 5.0 under Neel Nanda. The industrial
+      detour is why I care about mechanism: behavioral steering alone did not hold
+      up to systemic risk, and I want tools that do.
+    </p>
+  </section>
+
+  <!-- ================= RESEARCH ================= -->
+  <section id="research">
+    <div class="eyebrow">research</div>
+    <h2>Research directions</h2>
+    <p class="muted" style="margin-bottom:28px">
+      Five threads, one through-line: treat model internals as a physical system
+      with measurable structure, so that claims about safety can rest on mechanism.
+      Each direction is larger than any single program; the projects listed are its
+      current active instances.
+    </p>
+
+    <!-- Theme 1 -->
+    <div class="theme">
+      <div class="theme-head">
+        <span class="theme-num">I</span>
+        <h3>Feature geometry &amp; interpretability infrastructure</h3>
+      </div>
+      <p>The dictionaries our tools learn have geometric structure — and respecting
+      that structure makes the tools better.</p>
+      <div class="projects">
+        <div class="project">
+          <div class="tag-row"><span class="tag neutral">foundation</span></div>
+          <h4>The geometry of concepts</h4>
+          <p>SAE feature point clouds have structure at every scale — crystals,
+          functional lobes, and global clustering — that can be measured and exploited.</p>
+          <div class="foot">Entropy 2025 · with Tegmark et al.</div>
+        </div>
+        <div class="project">
+          <div class="tag-row"><span class="tag">active</span><span class="tag neutral">SPAR</span></div>
+          <h4>Crosscoders with structured priors</h4>
+          <p>Vanilla crosscoders scatter semantically related features. Adding
+          manifold-preserving constraints (SNE, InfoNCE, UMAP) recovers semantic
+          neighborhood structure — +31% NDCG@64 over vanilla — at modest
+          reconstruction cost. Includes an SAE Lens crosscoder extension.</p>
+          <div class="foot">paper in preparation</div>
+        </div>
+        <div class="project">
+          <div class="tag-row"><span class="tag">active</span></div>
+          <h4>V-SAE: variational sparse autoencoders</h4>
+          <p>Making the SAE prior explicit via variational inference. A prior-mismatch
+          account of feature splitting and absorption, with structured priors
+          (correlated, block-diagonal) as the principled fix.</p>
+          <div class="foot">framework &amp; diagnostic study · LessWrong series</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme 2 -->
+    <div class="theme">
+      <div class="theme-head">
+        <span class="theme-num">II</span>
+        <h3>Principled fine-tuning</h3>
+      </div>
+      <p>Fine-tuning is how the industry adapts models, and it is mostly a black box.
+      Interpretability can tell us where adaptation acts — and where it should.</p>
+      <div class="projects">
+        <div class="project">
+          <div class="tag-row"><span class="tag">active</span><span class="tag neutral">SPAR</span></div>
+          <h4>Where should we fine-tune?</h4>
+          <p>Layer placement for LoRA interacts strongly with instruction tuning:
+          on instruct models, late-layer LoRA is Pareto-better (equal task accuracy,
+          53.4% vs 28.8% MMLU retention on Qwen-1.5B-IT), while base models suffer
+          catastrophic forgetting under all-layer adaptation. SAE feature geography
+          varies by architecture — a diagnostic, not a universal recipe.</p>
+          <div class="foot">paper in preparation</div>
+        </div>
+        <div class="project">
+          <div class="tag-row"><span class="tag">active</span><span class="tag neutral">SPAR</span></div>
+          <h4>Steering ↔ weight updates</h4>
+          <p>A rank-1 LoRA update on a linear layer acts as activation steering with
+          an input-dependent gate. We study when reward-trained adapters recover
+          prompt-derived in-context vectors, and how the correspondence degrades
+          through non-linearities.</p>
+          <div class="foot">in progress</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme 3 -->
+    <div class="theme">
+      <div class="theme-head">
+        <span class="theme-num">III</span>
+        <h3>Hidden channels &amp; data-borne bias</h3>
+      </div>
+      <p>Models can inherit behavioral biases from semantically neutral training
+      data. What does the channel carry, at what cost, and can we detect it?</p>
+      <div class="projects">
+        <div class="project">
+          <div class="tag-row"><span class="tag">active</span><span class="tag neutral">SPAR</span></div>
+          <h4>The geometry of subliminal learning</h4>
+          <p>The mean-activation difference between biased and control number
+          datasets defines a direction that causally induces the hidden preference —
+          steering succeeds when fine-tuning succeeds, making steering vectors a
+          first-order approximation to subliminal transfer.</p>
+          <div class="foot">poster · SPAR Spring 2026</div>
+        </div>
+        <div class="project">
+          <div class="tag-row"><span class="tag">active</span></div>
+          <h4>Subliminal learning as a communication channel</h4>
+          <p>An information-theoretic framework bounding how much behavioral
+          information can pass through neutral-looking data — encoding cost,
+          channel capacity, and alignment between sender and receiver.</p>
+          <div class="foot">theory-first preprint in preparation</div>
+        </div>
+        <div class="project">
+          <div class="tag-row"><span class="tag neutral">proposed · ET</span></div>
+          <h4>Bias transfer &times; concept hierarchy</h4>
+          <p>Do concepts from the same category show similar transfer patterns?
+          Connecting hidden-channel learning to the hierarchical geometry of
+          concepts, via crosscoders across model families.</p>
+          <div class="foot">Effective Thesis direction</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme 4 -->
+    <div class="theme">
+      <div class="theme-head">
+        <span class="theme-num">IV</span>
+        <h3>Learning between learners</h3>
+      </div>
+      <p>AI systems learn from humans whose beliefs are themselves changing — and
+      changing in systematically biased ways. When is safe assistance possible?</p>
+      <div class="projects">
+        <div class="project">
+          <div class="tag-row"><span class="tag">active</span><span class="tag neutral">MARS</span></div>
+          <h4>Learning from a biased human learner</h4>
+          <p>Two coupled workstreams: identifiability theory (when can an observer
+          distinguish bias from preference, and when is intervention <em>necessary</em>,
+          not just helpful?) and empirical characterization of real belief change in
+          human–AI interaction — including how faithfully simulated humans stand in
+          for real ones. Belief entrenchment, via the
+          <a href="https://arxiv.org/abs/2512.02914">Martingale Score</a>, is the
+          common currency between theory and measurement.</p>
+          <div class="foot">with the <a href="https://lfl.meno.sh/">Meno LfL agenda</a> · in progress</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme 5 -->
+    <div class="theme">
+      <div class="theme-head">
+        <span class="theme-num">V</span>
+        <h3>Interpretability for safety-critical deployment</h3>
+      </div>
+      <p>Mechanistic understanding should pay rent: better control in high-stakes
+      settings, and better engineering under real constraints.</p>
+      <div class="projects">
+        <div class="project">
+          <div class="tag-row"><span class="tag">active</span><span class="tag neutral">SPAR</span></div>
+          <h4>Test-time steering for safety-critical reasoning</h4>
+          <p>Test-time generation of in-context vectors, with SAE features as
+          interpretable targets for safety-aware reward design — evaluated on
+          astrodynamics reasoning (APBench), with Prof. Di Wu.</p>
+          <div class="foot">in progress</div>
+        </div>
+        <div class="project">
+          <div class="tag-row"><span class="tag neutral">proposed · ET</span></div>
+          <h4>Principled KV-cache compression</h4>
+          <p>An interpretability-first approach to compressing LLM conversation
+          memory — head-specific feature selection with information-theoretic
+          scoring — that scored top in a competitive sparse-attention challenge.</p>
+          <div class="foot">Effective Thesis direction · LessWrong post</div>
+        </div>
+        <div class="project">
+          <div class="tag-row"><span class="tag neutral">proposed · ET</span></div>
+          <h4>Auditing safety-critical decoders</h4>
+          <p>Interpretability as verification where failure is unacceptable:
+          auditing LLM safety filters, or verifying what brain–computer interface
+          decoders actually compute.</p>
+          <div class="foot">Effective Thesis direction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROGRAMS ================= -->
+  <section id="programs">
+    <div class="eyebrow">programs &amp; mentoring</div>
+    <h2>Research programs I mentor</h2>
+
+    <div class="program">
+      <div class="program-head">
+        <h3>SPAR — Supervised Program for Alignment Research</h3>
+        <span class="when">Fall 2025 → present</span>
+      </div>
+      <p>
+        Mentoring since Fall 2025 under the umbrella "Sparse Geometry and Formal
+        Verification for Interpretability" — the round that produced the
+        structured-prior crosscoder and V-SAE results above. In Spring 2026,
+        co-mentored with Prof. Di Wu (Embry-Riddle Aeronautical University):
+        nine mentees across four project teams, all of which presented posters at
+        Demo Day (May 2026) and are now wrapping results into papers during the
+        summer extension:
+      </p>
+      <div class="roster">
+        <div class="roster-item">
+          <span class="pj">Where Should We Fine-Tune?</span>
+          <span class="who">Souvik Bose · Max Finenko · Ayush Singh · Siva Lakkoju · Keita Fujie</span>
+        </div>
+        <div class="roster-item">
+          <span class="pj">The Geometry of Subliminal Learning</span>
+          <span class="who">Julián Szereszewski · Siva Lakkoju</span>
+        </div>
+        <div class="roster-item">
+          <span class="pj">Crosscoders with Structured Priors</span>
+          <span class="who">Maxim Panteleev · Max Finenko</span>
+        </div>
+        <div class="roster-item">
+          <span class="pj">Prompt-Free ICVs via Rank-1 LoRA</span>
+          <span class="who">Keita Fujie · Ferdinand Bhavsar</span>
+        </div>
+      </div>
+      <p class="note">A Fall 2026 round is in preparation, focused on
+        interpretability-guided fine-tuning and the geometry of subliminal learning.
+        Interested? See <a href="https://sparai.org">sparai.org</a> or
+        <a href="#contact">reach out</a>.</p>
+    </div>
+
+    <div class="program">
+      <div class="program-head">
+        <h3>MARS — Learning from a Learner</h3>
+        <span class="when">Summer–Fall 2026</span>
+      </div>
+      <p>
+        Co-mentored with Tianyi Alex Qiu and Zhonghao He (<a href="https://lfl.meno.sh/">Meno</a>),
+        as part of <a href="https://www.caish.org/mars">MARS V</a>. One unified project —
+        <em>Learning from a Biased Human Learner</em> — with two coupled workstreams:
+        a theory track on identifiability and active assistance, and an empirical
+        track on human-model fidelity and belief change in real human–AI
+        conversations. Kick-off July 2026 (Oxford), outputs targeted for the fall.
+        This program is my deliberate bridge from single-model interpretability
+        into multi-agent safety.
+      </p>
+    </div>
+
+    <div class="program">
+      <div class="program-head">
+        <h3>Effective Thesis — Specialist Fellowship</h3>
+        <span class="when">2026 cohorts</span>
+      </div>
+      <p>
+        Mentor via BAIF, offering thesis-scale directions in hidden bias
+        transmission &times; concept geometry, principled KV-cache compression,
+        and interpretability for safety-critical systems. Fellows join an active
+        research line with existing code, preliminary results, and clear
+        publication targets — with a preference for peer teams working a shared
+        direction from complementary angles.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= PUBLICATIONS ================= -->
+  <section id="publications">
+    <div class="eyebrow">selected publications</div>
+    <h2>Publications</h2>
+
+    <div class="pub">
+      <div class="title">The Geometry of Concepts: Sparse Autoencoder Feature Structure</div>
+      <div class="authors">Yuxiao Li, Eric J. Michaud, David D. Baek, Joshua Engels, Xiaoqing Sun, Max Tegmark</div>
+      <div class="venue">Entropy 27(4), 2025
+        <a href="https://arxiv.org/abs/2410.19750">arXiv:2410.19750</a>
+        <a href="https://doi.org/10.3390/e27040344">doi</a>
+      </div>
+    </div>
+
+    <div class="pub">
+      <div class="title">Generalization from Starvation: Hints of Universality in LLM Knowledge Graph Learning</div>
+      <div class="authors">David D. Baek, Yuxiao Li, Max Tegmark</div>
+      <div class="venue">2024 <a href="https://arxiv.org/abs/2410.08255">arXiv</a></div>
+    </div>
+
+    <p class="muted" style="margin-top:16px;font-size:.9rem">
+      Full list on <a href="https://scholar.google.com/citations?hl=en&amp;user=2CGCf9cAAAAJ">Google Scholar</a>.
+      Manuscripts from the research directions above — on subliminal learning,
+      LoRA layer placement, structured-prior crosscoders, and steering–fine-tuning
+      correspondence — are in preparation and will appear here as they go public.
+    </p>
+  </section>
+
+  <!-- ================= NOTES ================= -->
+  <section id="notes">
+    <div class="eyebrow">notes &amp; writing</div>
+    <h2>Notes</h2>
+    <ul class="note-list">
+      <li><span class="date">2025</span>
+        <span><a href="https://www.lesswrong.com/posts/vdoafcWCL79GHxGLs/">Bottom-Up Principled Compression to Shrink LLMs</a>
+        <span class="muted"> — interpretability-first KV-cache compression, LessWrong</span></span>
+      </li>
+      <li><span class="date">2025</span>
+        <span><a href="https://www.lesswrong.com/posts/EHFCe5eahA8br6AvK/from-unruly-stacks-to-organized-shelves-toy-model-validation">From Unruly Stacks to Organized Shelves</a>
+        <span class="muted"> — first of a four-post LessWrong series on V-SAE and structured priors
+        (<a href="https://www.lesswrong.com/users/yuxiao">all posts</a>)</span></span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section id="contact">
+    <div class="eyebrow">contact</div>
+    <h2>Get in touch</h2>
+    <p class="muted">
+      For prospective mentees, collaborators, and program inquiries. If you're
+      applying to a program I mentor, mention which direction above caught your eye.
+    </p>
+    <div class="contact-grid">
+      <a href="mailto:yuxiao2234@gmail.com">email</a>
+      <a href="https://scholar.google.com/citations?hl=en&amp;user=2CGCf9cAAAAJ">scholar</a>
+      <a href="https://github.com/Yuxiao2234">github</a>
+      <a href="https://www.lesswrong.com/users/yuxiao">lesswrong</a>
+      <a href="https://www.linkedin.com/in/yuxiao-li-b84044226/">linkedin</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Yuxiao (Maj) Li · built with plain HTML · hosted on GitHub Pages
+</footer>
+
+</body>
+</html>
